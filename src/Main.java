@@ -4,51 +4,61 @@ import java.util.Scanner;
 
 //განივი, ანუ სრული გარარჩევის ალგორითმი
 public class Main {
+    public static final int limit = 10000;
+    public static boolean failure = false;
+    public static int count = 0;
     public static List<Node> listOpen = new ArrayList<>();
     public static List<Node> listClosed = new ArrayList<>();
     public static Node goalNode = null;
 
     public static void main(String[] args) {
-        Scanner in = new Scanner(System.in);
-        //საწყისი მდგომარეობა
+        Scanner input = new Scanner(System.in);
+        //საწყისი მდგომარეობის მატრიცა
         int[][] firsNode = new int[3][3];
-        //მიზნის მდგომარეობა
+        //მიზნის მდგომარეობის მატრიცა
         int[][] lasNode = new int[3][3];
-        System.out.println("enter first state matrix (use 0 instead of black box)");
+        System.out.println("შეიყვანეთ საწყისი მატრიცა (გამოიყენე 0 ცარიელი ადგილის მაგივრად) ");
         //საწყისი მდგომარეობის მატრიცის შეყვანა
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 3; ++j) {
-                firsNode[i][j] = in.nextInt();
+                firsNode[i][j] = input.nextInt();
             }
         }
-        System.out.println("enter last state matrix (use 0 instead of black box)");
-        //მიწნის მდგომარეობის მატრიცის შეყვანა
+        System.out.println("შეიყვანეთ საბოლოო მატრიცა (გამოიყენე 0 ცარიელი ადგილის მაგივრად)");
+        //საბოლოო მდგომარეობის მატრიცის შეყვანა
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 3; ++j) {
-                lasNode[i][j] = in.nextInt();
+                lasNode[i][j] = input.nextInt();
             }
         }
+
         Node root = new Node(firsNode);
         Node goalState = new Node(lasNode);
+
         listOpen.add(root);
         treeSearch(goalState);
 
         List<Node> path = new ArrayList<>();
-        while (goalNode.getParent() != null) {
-            path.add(goalNode);
-            goalNode = goalNode.getParent();
+        if (!failure) {
+            while (goalNode.getParent() != null) {
+                path.add(goalNode);
+                goalNode = goalNode.getParent();
+            }
+
+
+            System.out.println(root);
+            for (int i = path.size() - 1; i >= 0; --i)
+                System.out.println(path.get(i));
         }
-
-        System.out.println(root);
-        for (int i = path.size() - 1; i >= 0; --i)
-            System.out.println(path.get(i));
-
     }
 
     public static void treeSearch(Node goalState) {
 
-        if (listOpen.isEmpty()) {
+        count++;
+        System.out.println(count);
+        if (listOpen.isEmpty() || count == limit) {
             System.out.println("failure");
+            failure = true;
             return;
         }
         Node currentNode = listOpen.get(0);
@@ -76,7 +86,7 @@ public class Main {
         }
     }
 
-    //ამოწმებს მიმდინარე მატრიცა არის ტუ არა მიწნის მატრიცა
+    //ამოწმებს მიმდინარე მატრიცა არის თუ არა მიზნის მატრიცა
     public static boolean goalTestIsSuccessful(Node currenNode, Node goalState) {
         return currenNode.equals(goalState);
     }
@@ -162,6 +172,4 @@ public class Main {
         returnArray[i][j] = tmp;
         return returnArray;
     }
-
-
 }
