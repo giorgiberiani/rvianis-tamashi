@@ -2,6 +2,13 @@ public class Node {
     private int[][] node;
     private Node parent = null;
 
+    //კონსტრუქტორი
+    public Node(int[][] node) {
+        this.node = node;
+    }
+
+
+
     public Node getParent() {
         return parent;
     }
@@ -10,9 +17,15 @@ public class Node {
         this.parent = parent;
     }
 
-    public Node(int[][] node) {
-        this.node = node;
+    public int[][] getMatrix() {
+        return node;
     }
+
+
+
+
+
+
 
     public boolean equals(Node o) {
         for (int i = 0; i < 3; ++i) {
@@ -36,7 +49,4 @@ public class Node {
         return s;
     }
 
-    public int[][] getMatrix() {
-        return node;
-    }
 }

@@ -2,11 +2,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-//განივი, ანუ სრული გარარჩევის ალგორითმი
+//BFS, ანუ სრული გადარჩევის ალგორითმი
 public class Main {
-    public static final int limit = 10000;
-    public static boolean failure = false;
+    //ლიმიტი სტეკი რო არ გადაგვევსოს
+    public static final int limit = 5000;
     public static int count = 0;
+    public static boolean failure = false;
+
     public static List<Node> listOpen = new ArrayList<>();
     public static List<Node> listClosed = new ArrayList<>();
     public static Node goalNode = null;
@@ -18,14 +20,14 @@ public class Main {
         //მიზნის მდგომარეობის მატრიცა
         int[][] lasNode = new int[3][3];
         System.out.println("შეიყვანეთ საწყისი მატრიცა (გამოიყენე 0 ცარიელი ადგილის მაგივრად) ");
-        //საწყისი მდგომარეობის მატრიცის შეყვანა
+        //საწყისი მდგომარეობის მატრიცის გენერირება
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 3; ++j) {
                 firsNode[i][j] = input.nextInt();
             }
         }
-        System.out.println("შეიყვანეთ საბოლოო მატრიცა (გამოიყენე 0 ცარიელი ადგილის მაგივრად)");
-        //საბოლოო მდგომარეობის მატრიცის შეყვანა
+        System.out.println("შეიყვანეთ მიზნის მატრიცა (გამოიყენე 0 ცარიელი ადგილის მაგივრად)");
+        //მიზნის მდგომარეობის მატრიცის გენერირება
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 3; ++j) {
                 lasNode[i][j] = input.nextInt();
@@ -38,6 +40,7 @@ public class Main {
         listOpen.add(root);
         treeSearch(goalState);
 
+        //გზის ბეჭდვა
         List<Node> path = new ArrayList<>();
         if (!failure) {
             while (goalNode.getParent() != null) {
@@ -55,7 +58,6 @@ public class Main {
     public static void treeSearch(Node goalState) {
 
         count++;
-        System.out.println(count);
         if (listOpen.isEmpty() || count == limit) {
             System.out.println("failure");
             failure = true;
@@ -68,7 +70,7 @@ public class Main {
         for (Node m : childNodes)
             m.setParent(currentNode);
         insertAll(childNodes);
-        if (goalTestIsSuccessful(currentNode, goalState)) {
+        if (goalTestProcedure(currentNode, goalState)) {
             goalNode = currentNode;
             return;
         } else {
@@ -87,8 +89,8 @@ public class Main {
     }
 
     //ამოწმებს მიმდინარე მატრიცა არის თუ არა მიზნის მატრიცა
-    public static boolean goalTestIsSuccessful(Node currenNode, Node goalState) {
-        return currenNode.equals(goalState);
+    public static boolean goalTestProcedure(Node currentNode, Node goalState) {
+        return currentNode.equals(goalState);
     }
 
     //გენერირდება შვილი კომპონენტები
@@ -116,60 +118,61 @@ public class Main {
         return childNodes;
     }
 
+    //შევამოწმოთ
     private static int[][] leftChild(int[][] mass, int i, int j) {
         if (j == 0)
             return null;
-        int returnArray[][] = new int[3][3];
+        int arraytoReturn[][] = new int[3][3];
         for (int i1 = 0; i1 < 3; ++i1) {
             for (int j1 = 0; j1 < 3; ++j1)
-                returnArray[i1][j1] = mass[i1][j1];
+                arraytoReturn[i1][j1] = mass[i1][j1];
         }
-        int tmp = returnArray[i][j - 1];
-        returnArray[i][j - 1] = returnArray[i][j];
-        returnArray[i][j] = tmp;
+        int tmp = arraytoReturn[i][j - 1];
+        arraytoReturn[i][j - 1] = arraytoReturn[i][j];
+        arraytoReturn[i][j] = tmp;
 
-        return returnArray;
+        return arraytoReturn;
     }
 
     private static int[][] upChild(int[][] mass, int i, int j) {
         if (i == 0)
             return null;
-        int returnArray[][] = new int[3][3];
+        int arraytoReturn[][] = new int[3][3];
         for (int i1 = 0; i1 < 3; ++i1) {
             for (int j1 = 0; j1 < 3; ++j1)
-                returnArray[i1][j1] = mass[i1][j1];
+                arraytoReturn[i1][j1] = mass[i1][j1];
         }
-        int tmp = returnArray[i - 1][j];
-        returnArray[i - 1][j] = returnArray[i][j];
-        returnArray[i][j] = tmp;
-        return returnArray;
+        int tmp = arraytoReturn[i - 1][j];
+        arraytoReturn[i - 1][j] = arraytoReturn[i][j];
+        arraytoReturn[i][j] = tmp;
+        return arraytoReturn;
     }
 
     private static int[][] rightChild(int[][] mass, int i, int j) {
         if (j == 2)
             return null;
-        int returnArray[][] = new int[3][3];
+        int arraytoReturn[][] = new int[3][3];
         for (int i1 = 0; i1 < 3; ++i1) {
             for (int j1 = 0; j1 < 3; ++j1)
-                returnArray[i1][j1] = mass[i1][j1];
+                arraytoReturn[i1][j1] = mass[i1][j1];
         }
-        int tmp = returnArray[i][j + 1];
-        returnArray[i][j + 1] = returnArray[i][j];
-        returnArray[i][j] = tmp;
-        return returnArray;
+        int tmp = arraytoReturn[i][j + 1];
+        arraytoReturn[i][j + 1] = arraytoReturn[i][j];
+        arraytoReturn[i][j] = tmp;
+        return arraytoReturn;
     }
 
     private static int[][] bottomChild(int[][] mass, int i, int j) {
         if (i == 2)
             return null;
-        int returnArray[][] = new int[3][3];
+        int arraytoReturn[][] = new int[3][3];
         for (int i1 = 0; i1 < 3; ++i1) {
             for (int j1 = 0; j1 < 3; ++j1)
-                returnArray[i1][j1] = mass[i1][j1];
+                arraytoReturn[i1][j1] = mass[i1][j1];
         }
-        int tmp = returnArray[i + 1][j];
-        returnArray[i + 1][j] = returnArray[i][j];
-        returnArray[i][j] = tmp;
-        return returnArray;
+        int tmp = arraytoReturn[i + 1][j];
+        arraytoReturn[i + 1][j] = arraytoReturn[i][j];
+        arraytoReturn[i][j] = tmp;
+        return arraytoReturn;
     }
 }
